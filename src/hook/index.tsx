@@ -2,8 +2,8 @@ import {
   FetcherWithComponents,
   SubmitFunction,
   useActionData,
-  useSubmit,
   useNavigation,
+  useSubmit,
 } from "@remix-run/react";
 import React from "react";
 import {
@@ -81,6 +81,8 @@ export const useRemixForm = <T extends FieldValues>({
     isLoading,
   } = formState;
 
+  // const formErrors = mergeErrors<T>(errors, data?.errors ? data.errors : data);
+
   return {
     ...methods,
     handleSubmit: methods.handleSubmit(
@@ -102,6 +104,7 @@ export const useRemixForm = <T extends FieldValues>({
       touchedFields,
       submitCount,
       isLoading,
+      // errors: formErrors,
     },
   };
 };
