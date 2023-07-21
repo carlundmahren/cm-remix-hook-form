@@ -1,11 +1,12 @@
-import React from "react";
 import { SubmitFunction, useActionData, useSubmit } from "@remix-run/react";
+import React from "react";
 import {
+  FormProvider,
   SubmitErrorHandler,
   SubmitHandler,
+  useForm,
   useFormContext,
 } from "react-hook-form";
-import { useForm, FormProvider } from "react-hook-form";
 import type {
   FieldValues,
   Path,
@@ -14,7 +15,7 @@ import type {
   UseFormProps,
   UseFormReturn,
 } from "react-hook-form/dist/types";
-import { createFormData, mergeErrors } from "../utilities";
+import { createFormData } from "../utilities";
 
 export type SubmitFunctionOptions = Parameters<SubmitFunction>[1];
 interface UseRemixFormOptions<T extends FieldValues> extends UseFormProps<T> {
@@ -62,7 +63,7 @@ export const useRemixForm = <T extends FieldValues>({
     isLoading,
   } = formState;
 
-  const formErrors = mergeErrors<T>(errors, data?.errors ? data.errors : data);
+  // const formErrors = mergeErrors<T>(errors, data?.errors ? data.errors : data);
 
   return {
     ...methods,
@@ -85,7 +86,7 @@ export const useRemixForm = <T extends FieldValues>({
       touchedFields,
       submitCount,
       isLoading,
-      errors: formErrors,
+      // errors: formErrors,
     },
   };
 };
