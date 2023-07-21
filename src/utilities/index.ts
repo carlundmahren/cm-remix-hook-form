@@ -1,9 +1,9 @@
 import {
-  FieldValues,
-  Resolver,
+  DeepRequired,
   FieldErrors,
   FieldErrorsImpl,
-  DeepRequired,
+  FieldValues,
+  Resolver,
 } from "react-hook-form";
 
 /**
@@ -69,6 +69,7 @@ export const generateFormData = (formData: FormData) => {
 
 export const getFormDataFromSearchParams = (request: Pick<Request, "url">) => {
   const searchParams = new URL(request.url).searchParams;
+  //@ts-ignore
   return generateFormData(searchParams);
 };
 
