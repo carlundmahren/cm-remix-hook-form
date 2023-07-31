@@ -9,6 +9,7 @@ import {
 } from "react-hook-form";
 import type {
   FieldValues,
+  FormState,
   Path,
   RegisterOptions,
   UseFormHandleSubmit,
@@ -59,11 +60,8 @@ export const useRemixForm = <T extends FieldValues>({
     isValidating,
     touchedFields,
     submitCount,
-    errors,
     isLoading,
   } = formState;
-
-  // const formErrors = mergeErrors<T>(errors, data?.errors ? data.errors : data);
 
   return {
     ...methods,
@@ -86,20 +84,22 @@ export const useRemixForm = <T extends FieldValues>({
       touchedFields,
       submitCount,
       isLoading,
-      // errors: formErrors,
     },
   };
 };
 interface RemixFormProviderProps<T extends FieldValues>
-  extends Omit<UseFormReturn<T>, "handleSubmit"> {
+  extends Omit<UseFormReturn<T>, "handleSubmit" | "formState"> {
   children: React.ReactNode;
   handleSubmit: any;
   register: any;
+  formState: Omit<FormState<T>, "errors">;
 }
+
 export const RemixFormProvider = <T extends FieldValues>({
   children,
   ...props
 }: RemixFormProviderProps<T>) => {
+  // @ts-ignore
   return <FormProvider {...props}>{children}</FormProvider>;
 };
 
