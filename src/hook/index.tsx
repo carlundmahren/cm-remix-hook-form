@@ -3,6 +3,7 @@ import {
   SubmitFunction,
   useActionData,
   useSubmit,
+  useNavigation,
 } from "@remix-run/react";
 import React from "react";
 import {
@@ -48,6 +49,10 @@ export const useRemixForm = <T extends FieldValues>({
   const submit = fetcher?.submit ?? actionSubmit;
   const data = fetcher?.data ?? actionData;
   const methods = useForm<T>(formProps);
+  const navigation = useNavigation();
+  // Either it's submitted to an action or submitted to a fetcher (or neither)
+  const isSubmittingForm =
+    navigation.state !== "idle" || (fetcher && fetcher.state !== "idle");
 
   // Submits the data to the server when form is valid
   const onSubmit = (data: T) => {
@@ -91,7 +96,7 @@ export const useRemixForm = <T extends FieldValues>({
       isDirty,
       isSubmitSuccessful,
       isSubmitted,
-      isSubmitting,
+      isSubmitting: isSubmittingForm || isSubmitting,
       isValid,
       isValidating,
       touchedFields,
