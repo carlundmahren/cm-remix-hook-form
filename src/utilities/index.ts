@@ -130,8 +130,31 @@ export const createFormData = <T extends FieldValues>(
   key: string = "formData"
 ): FormData => {
   const formData = new FormData();
+
+  const recurseData = (key: string, value: any) => {
+    if (
+      (value as FileList).length &&
+      (value as FileList).length > 0 &&
+      (value as FileList)[0] instanceof File
+    ) {
+      const file = (value as FileList)[0];
+      formData.append(key, file, file.name);
+
+      delete data[key];
+    } else if (value instanceof Object) {
+      Object.entries(value).forEach((inside) => {
+        recurseData(`${key}.${inside[0]}`, inside[1]);
+      });
+    }
+  };
+
+  if (data instanceof Object) {
+    Object.entries(data).forEach(([key, value]) => recurseData(key, value));
+  }
+
   const finalData = JSON.stringify(data);
   formData.append(key, finalData);
+
   return formData;
 };
 /**
