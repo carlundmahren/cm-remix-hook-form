@@ -34,7 +34,8 @@
     "lint:fix": "npm run lint -- --fix",
     "prettier": "prettier app --check",
     "prettier:fix": "prettier app --write",
-    "format-code": "npm run prettier:fix & npm run lint:fix"
+    "format-code": "npm run prettier:fix & npm run lint:fix",
+    "postinstall": "npm run build"
   },
   "repository": {
     "type": "git",
