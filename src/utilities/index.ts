@@ -87,7 +87,7 @@ export const isGet = (request: Pick<Request, "method">) =>
  */
 export const getValidatedFormData = async <T extends FieldValues>(
   request: Request,
-  resolver: Resolver
+  resolver: Resolver,
 ) => {
   const data = isGet(request)
     ? getFormDataFromSearchParams(request)
@@ -104,12 +104,12 @@ export const getValidatedFormData = async <T extends FieldValues>(
  */
 export const validateFormData = async <T extends FieldValues>(
   data: any,
-  resolver: Resolver
+  resolver: Resolver,
 ) => {
   const { errors, values } = await resolver(
     data,
     {},
-    { shouldUseNativeValidation: false, fields: {} }
+    { shouldUseNativeValidation: false, fields: {} },
   );
 
   if (Object.keys(errors).length > 0) {
@@ -127,7 +127,7 @@ export const validateFormData = async <T extends FieldValues>(
 */
 export const createFormData = <T extends FieldValues>(
   data: T,
-  key: string = "formData"
+  key = "formData",
 ): FormData => {
   const formData = new FormData();
 
@@ -167,7 +167,7 @@ Parses the specified Request object's FormData to retrieve the data associated w
 */
 export const parseFormData = async <T extends any>(
   request: Request,
-  key: string = "formData"
+  key = "formData",
 ): Promise<T> => {
   const formData = await request.formData();
   const data = formData.get(key);
@@ -193,7 +193,9 @@ The function recursively merges the objects and returns the resulting object.
 */
 export const mergeErrors = <T extends FieldValues>(
   frontendErrors: Partial<FieldErrorsImpl<DeepRequired<T>>>,
-  backendErrors?: Partial<FieldErrorsImpl<DeepRequired<T>>>
+  backendErrors?: Partial<FieldErrorsImpl<DeepRequired<T>>>,
+  validKeys: string[] = [],
+  depth = 0,
 ) => {
   if (!backendErrors) {
     return frontendErrors;
@@ -201,13 +203,21 @@ export const mergeErrors = <T extends FieldValues>(
 
   for (const [key, rightValue] of Object.entries(backendErrors) as [
     keyof T,
-    DeepRequired<T>[keyof T]
+    DeepRequired<T>[keyof T],
   ][]) {
+    if (
+      !validKeys.includes(key.toString()) &&
+      validKeys.length &&
+      depth === 0
+    ) {
+      continue;
+    }
     if (typeof rightValue === "object" && !Array.isArray(rightValue)) {
       if (!frontendErrors[key]) {
         frontendErrors[key] = {} as DeepRequired<T>[keyof T];
       }
-      mergeErrors(frontendErrors[key]!, rightValue);
+      // eslint-disable-next-line @typescript-eslint/no-non-null-assertion
+      mergeErrors(frontendErrors[key]!, rightValue, validKeys, depth + 1);
     } else if (rightValue) {
       frontendErrors[key] = rightValue;
     }
