@@ -97,7 +97,7 @@ var validateFormData = async (data, resolver) => {
 var createFormData = (data, key = "formData") => {
   const formData = new FormData();
   const recurseData = (key2, value) => {
-    if (value.length && value.length > 0 && value[0] instanceof File) {
+    if (value && value.length && value.length > 0 && value[0] instanceof File) {
       const file = value[0];
       formData.append(key2, file, file.name);
       delete data[key2];

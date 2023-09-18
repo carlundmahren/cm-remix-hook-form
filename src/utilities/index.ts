@@ -133,6 +133,7 @@ export const createFormData = <T extends FieldValues>(
 
   const recurseData = (key: string, value: any) => {
     if (
+      (value as FileList) &&
       (value as FileList).length &&
       (value as FileList).length > 0 &&
       (value as FileList)[0] instanceof File
